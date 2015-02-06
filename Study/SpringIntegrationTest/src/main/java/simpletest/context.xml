@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-file="http://www.springframework.org/schema/integration/file"
+	xmlns:int-http="http://www.springframework.org/schema/integration/http"
+	xmlns:int-ip="http://www.springframework.org/schema/integration/ip"
+	xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd
+		http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file-4.1.xsd
+		http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.1.xsd
+		http://www.springframework.org/schema/integration/ip http://www.springframework.org/schema/integration/ip/spring-integration-ip-4.1.xsd
+		http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream-4.1.xsd">
+
+	<!-- This is a point-to-point message channel -->
+	<int:channel id="directChannel">
+		<int:dispatcher failover="false"/>
+	</int:channel>
+
+	<int:channel id="channelWithFixedOrderSequenceFailover">
+		<int:dispatcher load-balancer="none"/>
+	</int:channel>
+
+	<!-- this is a publish-subscribe message channel -->
+	<int:publish-subscribe-channel id="psChannel"></int:publish-subscribe-channel>
+	
+  	<!-- Channel that accept only Number data type -->
+  	<int:channel id="numberChannel" datatype="java.lang.Number"></int:channel>
+  	
+  	<!-- Channel with multiple type -->
+  	<int:channel id="stringOrNumberChannel" datatype="java.lang.Number,java.lang.String" />
+  	
+  	<!-- Converter -->
+  	<!-- Il servizio di conversione è creato e viene usato on-demand quando necessario -->
+  	<int:converter ref="strToInt"/>
+  	<bean id="strToInt" class="simpletest.StringToIntegerConverter"/>
+  	
+  	<!-- Queue channel -->
+  	<int:channel id="queueChannel">
+  		<int:queue capacity="25"/>
+  	</int:channel>
+  	
+  	<!-- Handling messages -->
+  	
+  	<bean id="simpleMessageHandler" class="simpletest.SimpleMessageHandler" scope="prototype"/>
+  	<bean id="simpleMessageHandler2" class="simpletest.SimpleMessageHandler2" />
+  	
+  	<!-- Generic Message -->
+  	
+  	<bean id="simpleMessage" class="simpletest.SimpleMessage" scope="prototype">
+  		
+  	</bean>
+  	
+  	<!-- Broadcast -->
+  	
+  	  	
+  	<int:publish-subscribe-channel id="publishSubscribeChannel" max-subscribers="10" >
+  		
+  	</int:publish-subscribe-channel>
+  	
+</beans>
